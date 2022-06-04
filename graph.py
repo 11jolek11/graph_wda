@@ -68,7 +68,7 @@ if __name__ == "__main__":
 	g = Graph(nodes=p)
 	# g.plot()
 	print(g.component_split())
-	print(g.adj_list_to_matrix())
+	# print(g.adj_list_to_matrix())
 	g.plot()
 	# print(g.dfs_helper(0) ^ g.dfs_helper(1))
 

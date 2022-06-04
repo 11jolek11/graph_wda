@@ -1,33 +1,34 @@
 import sys
 
-class dane:
-	def __init__(self):
-		self.koszt = sys.maxsize
-		self.poprzednik = -1
 
-def AlgorytmPrima(macierz, s):
-	n = len(macierz)
-	wynik = [dane() for x in range(n)]
-	wynik[s].koszt = 0
-	kolejka = list(range(n))
-	while len(kolejka) != 0:
+class Helper:
+	def __init__(self):
+		self.cost = sys.maxsize
+		self.predecessor = -1
+
+
+def prim(matrix, s):
+	n = len(matrix)
+	result = [Helper() for x in range(n)]
+	result[s].cost = 0
+	queue = list(range(n))
+	while len(queue) != 0:
 		u = -1
-		for q in kolejka:
-			if wynik[q].koszt != sys.maxsize and (u == -1 or wynik[q].koszt < wynik[u].koszt):
+		for q in queue:
+			if result[q].cost != sys.maxsize and (u == -1 or result[q].cost < result[u].cost):
 				u = q
 		for j in range(n):
 			try:
-				kolejka.index(j)
-				if macierz[u][j] == 0:
+				queue.index(j)
+				if matrix[u][j] == 0:
 					continue
 			except ValueError:
 				continue
-			if wynik[j].koszt > macierz[u][j]:
-				wynik[j].koszt = macierz[u][j]
-				wynik[j].poprzednik = u
-		kolejka.remove(u)
-		print(str(u))
-	return wynik
+			if result[j].cost > matrix[u][j]:
+				result[j].cost = matrix[u][j]
+				result[j].predecessor = u
+		queue.remove(u)
+	return result
 
 
 if __name__ == "__main__":
@@ -37,13 +38,11 @@ if __name__ == "__main__":
 [4, 0, 2, 0, 3],
 [1, 0, 1, 3, 0]]
 
-	wynik = AlgorytmPrima(macierz, 1)
+	wynik = prim(macierz, 1)
 	suma = 0
-	print("ID\tPoprzednik")
 	for i in range(len(macierz)):
-		print(str(i) + "\t" + str(wynik[i].poprzednik))
-		suma += wynik[i].koszt
-	print("ĹÄczny koszt wynosi: " + str(suma))
+		suma += wynik[i].cost
+	print("Cost: " + str(suma))
 
 
 """

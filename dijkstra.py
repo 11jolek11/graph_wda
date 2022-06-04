@@ -23,10 +23,10 @@ def print_out(line, d):
 	if not d.odwiedzony:
 		txt += "not visited"
 	else:
-		if d.poprzednik == -1:
+		if d.predecessor == -1:
 			txt += "None"
 		else:
-			txt += str(d.poprzednik)
+			txt += str(d.predecessor)
 		txt += "\t" + str(d.dystans)
 	print(txt)
 
