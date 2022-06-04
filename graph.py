@@ -5,6 +5,7 @@ from itertools import chain
 from typing import Tuple, Any, List
 import numpy as np
 
+
 class Graph:
 	def __init__(self, nodes: dict = None):
 		if nodes is None:
@@ -25,18 +26,6 @@ class Graph:
 
 	def list_all_key_nodes(self):
 		return set(chain.from_iterable(self.adjacency_list.keys()))
-
-	def adj_list_to_matrix(self):
-		adj_list = list(self.adjacency_list.values())
-		# print(adj_list)
-		n = len(adj_list)
-		adj_matrix = np.nan * np.ones((n, n))
-		np.fill_diagonal(adj_matrix, 0)
-
-		for i in range(n):
-			for j, w in adj_list[i]:
-				adj_matrix[i, j] = w
-		return adj_matrix
 
 	def plot(self):
 		for leading_node in self.adjacency_list.keys():

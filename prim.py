@@ -45,7 +45,7 @@ def AlgorytmPrima(macierz, s):
 if __name__ == "__main__":
 	n = int(input("Ile wierzchołków ma graf?\n n = "))
 	s = int(input("Od którego wierzchołka zacząć?\n s = "))
-	print("Podaj macierz:")
+	print("Podaj input_matrix:")
 	macierz = [[int(x) for x in input().split()] for y in range(n)]
 	wynik = AlgorytmPrima(macierz, s)
 	suma = 0

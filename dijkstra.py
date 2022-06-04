@@ -1,111 +1,118 @@
-from collections import defaultdict
-from typing import Type
-import networkx as nx
-from networkx import Graph as TempGraph
-import matplotlib.pyplot as plt
-
-# FIXME: all
-class Weight:
-
-    def __init__(self, node_id: int, weight: int):
-        self.id = node_id
-        self.weight = weight
-
-    def __repr__(self):
-        return str(self.id)
+import sys
+import queue
+# https://graphonline.ru/en/
 
 
+"""
+Algorytm Dijkstry przy użyciu macierzy (w materiałach źródłowych nie było
+opisu listy z wagami, więc użyłem macierzy)
+"""
 
-class Graph:
 
-    def __init__(self, node_count: int):
-        # Store the adjacency list as a dictionary
-        # The default dictionary would create an empty list as a default (value)
-        # for the nonexistent keys.
-        self.adjacency_list = defaultdict(list)
-        # self.adjacency_list = dict()
-        self.node_count = node_count
-        self.canvas = TempGraph()
+class Helper(object):
+	def __init__(self, v, p, d):
+		self.odwiedzony = v
+		self.poprzednik = p
+		self.dystans = d
 
-    def add_node(self, src: int, node_dist: Weight(Type[int], Type[int])):
-        self.adjacency_list[src].append(node_dist)
 
-    def plot(self):
-        for leading_node in self.adjacency_list.keys():
-            for next_node in self.adjacency_list[leading_node]:
-                self.canvas.add_edge(leading_node, next_node)
-        nx.draw(self.canvas, with_labels=True)
-        plt.show()
+def print_out(line, d):
+	# direction - ostatni node
+	print("Node Direction Dist")
+	txt = str(line) + "\t"
+	if not d.odwiedzony:
+		txt += "not visited"
+	else:
+		if d.poprzednik == -1:
+			txt += "None"
+		else:
+			txt += str(d.poprzednik)
+		txt += "\t" + str(d.dystans)
+	print(txt)
 
-    def dijkstras(self, source: int):
 
-        # Initialize the distance of all the nodes from the source node to infinity
-        distance = [1000000000] * self.node_count
-        # Distance of source node to itself is 0
-        distance[source] = 0
+def min_lookup(matrix):
+	minimal = -1
+	minimal_dist = sys.maxsize
+	for i in range(0, len(matrix)):
+		if (not matrix[i].odwiedzony) and matrix[i].dystans < minimal_dist:
+			minimal = i
+			minimal_dist = matrix[i].dystans
+	return minimal
 
-        # Create a dictionary of { node, distance_from_source }
-        dict_node_length = {source: 0}
 
-        while dict_node_length:
-
-            # Get the key for the smallest value in the dictionary
-            # i.e Get the node with the shortest distance from the source
-            current_source_node = min(dict_node_length, key=lambda k: dict_node_length[k])
-            del dict_node_length[current_source_node]
-
-            for node_dist in self.adjacency_list[current_source_node]:
-                adjnode = node_dist.id
-                length_to_adjnode = node_dist.weight
-
-                # Edge relaxation
-                if distance[adjnode] > distance[current_source_node] + length_to_adjnode :
-                    distance[adjnode] = distance[current_source_node] + length_to_adjnode
-                    dict_node_length[adjnode] = distance[adjnode]
-
-        for i in range(self.node_count):
-            # print(distance)
-            print("("+str(source)+") -> (" + str(i) + ") ||| " + str(distance[i]))
+def dijkstra(input_matrix, start):
+	temp = []
+	for p in range(0, len(input_matrix)):
+		temp.append(Helper(False, -1, sys.maxsize))
+	temp[start].dystans = 0
+	u = start
+	while u != -1:
+		temp[u].odwiedzony = True
+		for p in range(0, len(input_matrix)):
+			if input_matrix[u][p] > 0 and temp[u].dystans + input_matrix[u][p] < temp[p].dystans:
+				temp[p].dystans = temp[u].dystans + input_matrix[u][p]
+				temp[p].poprzednik = u
+		u = min_lookup(temp)
+	return temp
 
 
 if __name__ == "__main__":
+	# tablica = [[0, 6, 3, 4, 1],
+	# [6, 0, 1, 0, 0],
+	# [3, 1, 0, 2, 1],
+	# [4, 0, 2, 0, 3],
+	# [1, 0, 1, 3, 0]]
 
-    g = Graph(6)
+# 	tablica = [[0, 6, 3, 4, 1, 0, ],
+# 	[6, 0, 1, 0, 0, 3, ],
+# 	[3, 1, 0, 2, 1, 0, ],
+# 	[4, 0, 2, 0, 3, 0, ],
+# 	[1, 0, 1, 3, 0, 0, ],
+# 	[0, 3, 0, 0, 0, 0, ]]
 
-    # Node 0: <1,5> <2,1> <3,4>
-    g.add_node(0, Weight(1, 5))
-    g.add_node(0, Weight(2, 1))
-    g.add_node(0, Weight(3, 4))
+	# http://graphonline.ru/en/?graph=XAGNhhbcLDgFUMcc
+	# tablica = [[0, 6, 3, 4, 1, 0, 0, 0,],
+	# [6, 0, 1, 0, 0, 3, 0, 0,],
+	# [3, 1, 0, 2, 1, 0, 0, 0,],
+	# [4, 0, 2, 0, 3, 0, 0, 0,],
+	# [1, 0, 1, 3, 0, 0, 0, 0,],
+	# [0, 3, 0, 0, 0, 0, 0, 0,],
+	# [0, 0, 0, 0, 0, 0, 0, 1,],
+	# [0, 0, 0, 0, 0, 0, 1, 0,]]
 
-    # Node 1: <0,5> <2,3> <4,8>
-    g.add_node(1, Weight(0, 5))
-    g.add_node(1, Weight(2, 3))
-    g.add_node(1, Weight(4, 8))
+	# http://graphonline.ru/en/?graph=XAGNhhbcLDgFUMcc
+	tablica = [[0, 12, 12, 12, 1, 0, 0, 0,],
+[12, 0, 1, 0, 0, 3, 0, 0,],
+[12, 1, 0, 2, 12, 0, 0, 0,],
+[12, 0, 2, 0, 3, 0, 0, 0,],
+[1, 0, 12, 3, 0, 0, 0, 0,],
+[0, 3, 0, 0, 0, 0, 0, 0,],
+[0, 0, 0, 0, 0, 0, 0, 1,],
+[0, 0, 0, 0, 0, 0, 1, 0,]]
 
-    # Node 2: <0,1> <1,3> <3,2> <4,1>
-    g.add_node(2, Weight(0, 1))
-    g.add_node(2, Weight(1, 3))
-    g.add_node(2, Weight(3, 2))
-    g.add_node(2, Weight(4, 1))
+	dij = dijkstra(tablica, 0)
+	for i in range(0, len(tablica)):
+		print_out(i, dij[i])
 
-    # Node 3: <0,4> <2,2> <4,2> <5,1>
-    g.add_node(3, Weight(0, 4))
-    g.add_node(3, Weight(2, 2))
-    g.add_node(3, Weight(4, 2))
-    g.add_node(3, Weight(5, 1))
+"""
 
-    # Node 4: <1,8> <2,1> <3,2> <5,3>
-    g.add_node(4, Weight(1, 8))
-    g.add_node(4, Weight(2, 1))
-    g.add_node(4, Weight(3, 2))
-    g.add_node(4, Weight(5, 3))
+Numeracja wierzchołków zaczyna się od zera (patrz: graf_diksta.png)
+http://graphonline.ru/en/?graph=MMqnxjyMrgDKeDDq
 
-    # Node 5: <3,1> <4,3>
-    g.add_node(5, Weight(3, 1))
-    g.add_node(5, Weight(4, 3))
+0 6 3 4 1
+6 0 1 0 0
+3 1 0 2 1
+4 0 2 0 3
+1 0 1 3 0
+"""
 
+"""
+[[0, 6, 3, 4, 1, 0,],
+[6, 0, 1, 0, 0, 3,],
+[3, 1, 0, 2, 1, 0,],
+[4, 0, 2, 0, 3, 0,],
+[1, 0, 1, 3, 0, 0,],
+[0, 3, 0, 0, 0, 0,]]
 
-    g.dijkstras(0)
-    print("\n")
-    g.dijkstras(5)
-    g.plot()
+"""
