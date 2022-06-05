@@ -1,21 +1,19 @@
-import sys
-
-
 class Helper:
 	def __init__(self):
-		self.cost = sys.maxsize
+		# self.cost = sys.maxsize
+		self.cost = 1000000
 		self.predecessor = -1
 
 
 def prim(matrix, s):
 	n = len(matrix)
-	result = [Helper() for x in range(n)]
+	result = [Helper() for _ in range(n)]
 	result[s].cost = 0
 	queue = list(range(n))
 	while len(queue) != 0:
 		u = -1
 		for q in queue:
-			if result[q].cost != sys.maxsize and (u == -1 or result[q].cost < result[u].cost):
+			if result[q].cost != 1000000 and (u == -1 or result[q].cost < result[u].cost):
 				u = q
 		for j in range(n):
 			try:

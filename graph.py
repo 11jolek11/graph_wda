@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from itertools import chain
 from typing import Tuple, Any, List
 import numpy as np
+import itertools
 
 
 class Graph:
@@ -49,8 +50,12 @@ class Graph:
 
 	def component_split(self):
 		temp = []
+		# for node in self.adjacency_list.keys():
+		# 	temp.append((node, self.dfs_helper(node)))
 		for node in self.adjacency_list.keys():
-			temp.append((node, self.dfs_helper(node)))
+			temp.append(self.dfs_helper(node))
+		temp.sort()
+		temp = list(k for k, _ in itertools.groupby(temp))
 		return temp
 
 
