@@ -1,6 +1,6 @@
 class Helper:
 	def __init__(self):
-		# self.cost = sys.maxsize
+		# self.
 		self.cost = 1000000
 		self.predecessor = -1
 
