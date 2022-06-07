@@ -1,5 +1,4 @@
 import sys
-import queue
 # https://graphonline.ru/en/
 
 
@@ -17,7 +16,6 @@ class Helper(object):
 
 
 def print_out(line, d):
-	# direction - ostatni node
 	txt = str(line) + "\t"
 	if not d.visiteddd:
 		txt += "not visited"
@@ -30,9 +28,9 @@ def print_out(line, d):
 	print(txt)
 
 
-def min_lookup(matrix):
+def search_for_minimal(matrix):
 	minimal = -1
-	minimal_dist = sys.maxsize
+	minimal_dist = 100000
 	for i in range(0, len(matrix)):
 		if (not matrix[i].visiteddd) and matrix[i].dist < minimal_dist:
 			minimal = i
@@ -40,19 +38,19 @@ def min_lookup(matrix):
 	return minimal
 
 
-def dijkstra(input_matrix, start):
+def dijkstra(input_matrix, starting_pont):
 	temp = []
 	for p in range(0, len(input_matrix)):
-		temp.append(Helper(False, -1, sys.maxsize))
-	temp[start].dist = 0
-	u = start
+		temp.append(Helper(False, -1, 100000))
+	temp[starting_pont].dist = 0
+	u = starting_pont
 	while u != -1:
 		temp[u].visiteddd = True
 		for p in range(0, len(input_matrix)):
 			if input_matrix[u][p] > 0 and temp[u].dist + input_matrix[u][p] < temp[p].dist:
 				temp[p].dist = temp[u].dist + input_matrix[u][p]
 				temp[p].predecessor = u
-		u = min_lookup(temp)
+		u = search_for_minimal(temp)
 	return temp
 
 

@@ -1,6 +1,5 @@
 class Helper:
 	def __init__(self):
-		# self.cost = sys.maxsize
 		self.cost = 1000000
 		self.predecessor = -1
 
@@ -9,15 +8,15 @@ def prim(matrix, s):
 	n = len(matrix)
 	result = [Helper() for _ in range(n)]
 	result[s].cost = 0
-	queue = list(range(n))
-	while len(queue) != 0:
+	kolejka = list(range(n))
+	while len(kolejka) != 0:
 		u = -1
-		for q in queue:
+		for q in kolejka:
 			if result[q].cost != 1000000 and (u == -1 or result[q].cost < result[u].cost):
 				u = q
 		for j in range(n):
 			try:
-				queue.index(j)
+				kolejka.index(j)
 				if matrix[u][j] == 0:
 					continue
 			except ValueError:
@@ -25,7 +24,7 @@ def prim(matrix, s):
 			if result[j].cost > matrix[u][j]:
 				result[j].cost = matrix[u][j]
 				result[j].predecessor = u
-		queue.remove(u)
+		kolejka.remove(u)
 	return result
 
 
