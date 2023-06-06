@@ -3,32 +3,51 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-def kruskal(matrix):
-    theta = np.asarray(matrix)
+parent, rank = [], []
 
-    G = nx.Graph()
-    counter = np.count_nonzero(theta)
-    t = []
-    for _ in range(counter):
-        i = list(np.unravel_index(np.where(theta != 0, theta, theta.max() + 1).argmin(), theta.shape))
-        t.append([i, theta[i[0]][i[1]]])
-        theta[i[0]][i[1]] = 0
-    t = np.asarray(t)
-    for edge in t[:, 0]:
-        edge = tuple(edge)
-        G.add_edge(*edge)
-        if len(nx.cycle_basis(G)) != 0:
-            G.remove_edge(*edge)
-    nx.draw(G, with_labels=True)
-    plt.show()
-    return G.number_of_nodes()
+def make_set(v):
+    parent[v] = v
+    rank[v] = 0
 
+def find_set(v):
+    if v == parent[v]:
+        return v
+    parent[v] = find_set(parent[v])
+    return parent
 
-if __name__ == "__main__":
-    p = np.asarray([[0, 6, 3, 4, 1],
-                    [6, 0, 1, 0, 0],
-                    [3, 1, 0, 2, 1],
-                    [4, 0, 2, 0, 3],
-                    [1, 0, 1, 3, 0]])
+def union_set(a, b):
+    a = find_set(a)
+    b = find_set(b)
 
-    print(kruskal(p))
+    if a != b:
+        if rank[a] < rank[b]:
+            # swap
+            temp = a
+            a = b
+            b = temp
+            parent[b] = a
+        if rank[a] == rank[b]:
+            rank[a]+=1
+
+# FIXME: Change this
+class Edge:
+    def __init__(self):
+        self.u = None
+        self.v = None
+        self.weight = None
+    
+    def operator(self, other):
+        return self.weight < other.weight
+
+def kruskal(edges: list[Edge], n):
+    cost = 0
+    results = []
+    for i in range(n):
+        make_set(i)
+    edges.sort(key=lambda x: x.weight)
+
+    for edge in edges:
+        if find_set(edge.u) != find_set(edge.v):
+            cost += edge.weight
+            results.append(edge)
+            union_set(edge.u, edge.v)
