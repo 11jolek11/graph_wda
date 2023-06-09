@@ -61,6 +61,8 @@
 #     Edge(4, 1, 4),
 #     Edge(1, 3, 3)]
 #     print(kruskal(graph, 5))
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 class Graph:
@@ -68,10 +70,13 @@ class Graph:
     def __init__(self, vertices):
         self.V = vertices
         self.graph = []
+        self.G = nx.Graph()
+
  
     # Function to add an edge to graph
     def addEdge(self, u, v, w):
         self.graph.append([u, v, w])
+        self.G.add_edge(u, v, weight=w, color="black")
  
     # A utility function to find set of an element i
     # (truly uses path compression technique)
@@ -124,6 +129,7 @@ class Graph:
 
         # Create V subsets with single elements
         for node in range(self.V):
+            # MakeSet (patrz Cormen)
             parent.append(node)
             rank.append(0)
         # Number of edges to be taken is less than to V-1
@@ -142,24 +148,36 @@ class Graph:
             if x != y:
                 e = e + 1
                 result.append([u, v, w])
+                self.G[u][v]['color'] = "red"
+                print("%d -- %d" % (u, v))
                 self.union(parent, rank, x, y)
             # Else discard the edge
+            # color_map = ['red' if [u, v, w] in result else 'green' for _ in self.G.nodes]
+            colors = [self.G[u][v]['color'] for u,v in self.G.edges()]
+            nx.draw_networkx(self.G, with_labels=True, edge_color=colors)
+            plt.show()
 
         minimumCost = 0
         print("Edges in the constructed MST")
         for u, v, weight in result:
             minimumCost += weight
-            print("%d -- %d == %d" % (u, v, weight))
+            # print("%d -- %d == %d" % (u, v, weight))
         print("Minimum Spanning Tree", minimumCost)
 
 
 # Driver code
 if __name__ == '__main__':
     g = Graph(4)
-    g.addEdge(0, 1, 10)
-    g.addEdge(0, 2, 6)
-    g.addEdge(0, 3, 5)
-    g.addEdge(1, 3, 15)
-    g.addEdge(2, 3, 4)
+    # g.addEdge(0, 1, 10)
+    # g.addEdge(0, 2, 6)
+    # g.addEdge(0, 3, 5)
+    # g.addEdge(1, 3, 15)
+    # g.addEdge(2, 3, 4)
+
+    g.addEdge(0, 1, 1) 
+    g.addEdge(0, 2, 3)
+    g.addEdge(0, 3, 4)
+    g.addEdge(1, 2, 2)
+    g.addEdge(2, 3, 5)
     # Function call
     g.KruskalMST()
