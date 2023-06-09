@@ -1,5 +1,7 @@
 from collections import namedtuple, deque
 from pprint import pprint as pp
+import matplotlib.pyplot as plt
+import networkx as nx
  
  
 inf = float('inf')
@@ -7,13 +9,22 @@ Edge = namedtuple('Edge', ['start', 'end', 'cost'])
 
 class Graph():
     def __init__(self, edges):
+        self.G = nx.Graph()
         self.edges = [Edge(*edge) for edge in edges]
         # print(dir(self.edges[0]))
         self.vertices = {e.start for e in self.edges} | {e.end for e in self.edges}
+
+        for i in range(len(edges)):
+            edges[i][2] = {'weight': edges[i][2], "color": "black"}
+
+        self.G.add_edges_from(edges)
+        nx.draw_networkx(self.G, with_labels=True)
+        plt.show()
+
  
     def dijkstra(self, source, dest):
-        # TODO: zmien assert na if'a
-        assert source in self.vertices
+        if source not in self.vertices:
+            raise ValueError
         dist = {vertex: inf for vertex in self.vertices}
         previous = {vertex: None for vertex in self.vertices}
         dist[source] = 0
@@ -33,7 +44,8 @@ class Graph():
                 break
             for v, cost in neighbours[u]:
                 alt = dist[u] + cost
-                if alt < dist[v]:                                  # Relax (u,v,a)
+                # Relaksacja (patrz Cormen)
+                if alt < dist[v]:                                 
                     dist[v] = alt
                     previous[v] = u
         #pp(previous)
@@ -42,10 +54,16 @@ class Graph():
             s.appendleft(u)
             u = previous[u]
         s.appendleft(u)
+        for i in range(len(s)-1):
+            self.G[s[i]][s[i+1]]["color"] = "red"
+            edges = self.G.edges()
+            colors = [self.G[p][o]['color'] for p,o in edges]
+            nx.draw(self.G, edge_color=colors, with_labels=True)
+            plt.show()
         return s
  
  
-graph = Graph([("a", "b", 7),  ("a", "c", 9),  ("a", "f", 14), ("b", "c", 10),
-               ("b", "d", 15), ("c", "d", 11), ("c", "f", 2),  ("d", "e", 6),
-               ("e", "f", 9)])
+graph = Graph([["a", "b", 7],  ["a", "c", 9],  ["a", "f", 14], ["b", "c", 10],
+               ["b", "d", 15], ["c", "d", 11], ["c", "f", 2],  ["d", "e", 6],
+               ["e", "f", 9]])
 pp(graph.dijkstra("a", "e"))
