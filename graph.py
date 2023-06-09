@@ -16,64 +16,54 @@ class Graph:
 		self.canvas = TempGraph()
 		self.visited = set()
 
-	def add_node(self, node: Tuple[Any, List]) -> None:
-		self.adjacency_list[node[0]] = node[10]
-
-	def __repr__(self):
-		return self.adjacency_list
-
-	def list_all_nodes(self):
-		return set(chain.from_iterable(self.adjacency_list.values()))
-
-	def list_all_key_nodes(self):
-		return set(chain.from_iterable(self.adjacency_list.keys()))
-
-	def plot(self):
 		for leading_node in self.adjacency_list.keys():
 			for next_node in self.adjacency_list[leading_node]:
 				self.canvas.add_edge(leading_node, next_node)
+		
+		print("Hello WOrld")
+
+	def add_node(self, node: Tuple[Any, List]) -> None:
+		self.adjacency_list[node[0]] = node[10]
+
+	def plot(self):
 		nx.draw(self.canvas, with_labels=True)
 		plt.show()
 
 	# @staticmethod
 	def dfs(self, visited, graph, node):
-		if node not in visited:
-			# print(node)
-			visited.add(node)
-			for neighbour in graph[node]:
+		print(node)
+		visited.append(node)
+		color_map = ['red' if node in visited else 'green' for node in list(graph.keys())]
+		nx.draw_networkx(self.canvas, with_labels=True, node_color=color_map)
+		plt.show()
+		for neighbour in graph[node]:
+			if neighbour not in visited:
 				self.dfs(visited, graph, neighbour)
-			return visited
+		return visited
 
 	def dfs_helper(self, start):
-		self.visited = set()
+		self.visited = []
 		return self.dfs(visited=self.visited, graph=self.adjacency_list, node=start)
 
-	def component_split(self):
-		temp = []
-		# for node in self.adjacency_list.keys():
-		# 	temp.append((node, self.dfs_helper(node)))
-		for node in self.adjacency_list.keys():
-			temp.append(self.dfs_helper(node))
-		temp.sort()
-		temp = list(k for k, _ in itertools.groupby(temp))
-		return temp
 
 
 if __name__ == "__main__":
+	# p = {
+	# 	0: [1, 3],
+	# 	1: [0, 4, 2],
+	# 	2: [1, 3],
+	# 	3: [0, 2, 4],
+	# 	4: [1, 3],
+	# 	# 5: [6, 7],
+	# 	# 6: [5, 7],
+	# 	# 7: [5, 6],
+	# }
 	p = {
-		0: [1, 3],
-		1: [0, 4, 2],
-		2: [1, 3],
-		3: [0, 2, 4],
-		4: [1, 3],
-		5: [6, 7],
-		6: [5, 7],
-		7: [5, 6],
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D'],
+    'D': ['B', 'C']
 	}
 	g = Graph(nodes=p)
-	# g.plot()
-	print(g.component_split())
-	# print(g.adj_list_to_matrix())
 	g.plot()
-	# print(g.dfs_helper(0) ^ g.dfs_helper(1))
-
+	print(g.dfs_helper("A"))
