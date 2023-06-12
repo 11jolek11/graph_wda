@@ -7,6 +7,7 @@ import networkx as nx
 inf = float('inf')
 Edge = namedtuple('Edge', ['start', 'end', 'cost'])
 
+
 class Graph():
     def __init__(self, edges):
         self.G = nx.Graph()
@@ -67,7 +68,7 @@ class Graph():
         for i in range(len(s)-1):
             self.G[s[i]][s[i+1]]["color"] = "red"
             edges = self.G.edges()
-            weights = self.G.weights()
+            # weights = self.G.weight()
             colors = [self.G[p][o]['color'] for p,o in edges]
             edge_labels = nx.get_edge_attributes(self.G, "weight")
             nx.draw(self.G, edge_color=colors, with_labels=True)
@@ -75,10 +76,23 @@ class Graph():
         return s
  
 if __name__ == "__main__":
-    graph = Graph([["a", "b", 7],  ["a", "c", 9],  ["a", "f", 14], ["b", "c", 10],
-                ["b", "d", 15], ["c", "d", 11], ["c", "f", 2],  ["d", "e", 6],
-                ["e", "f", 9]])
-    pp(graph.dijkstra("a", "e"))
+    # graph = Graph([["a", "b", 7],  ["a", "c", 9],  ["a", "f", 14], ["b", "c", 10],
+    #             ["b", "d", 15], ["c", "d", 11], ["c", "f", 2],  ["d", "e", 6],
+    #             ["e", "f", 9]])
+    # pp(graph.dijkstra("a", "e"))
+
+    graph = Graph([
+                    ["r", "o", 5],
+                    ["r", "l", 4],
+                    ["o", "b", 1],
+                    ["o", "m", 3],
+                    ["m", "bel", 5],
+                    ["m", "athen", 4],
+                    ["athen", "bel", 1],
+                    ["rome", "b", 2],
+                    ["rome", "athen", 2],
+                   ])
+    pp(graph.dijkstra("r", "bel"))
 
 
 
