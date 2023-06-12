@@ -1,66 +1,3 @@
-# parent, rank = [], []
-
-# def prepare(n):
-#     parent = [None for _ in range(n)]
-#     rank = [None for _ in range(n)]
-
-# def make_set(v):
-#     parent[v] = v
-#     rank[v] = 0
-
-# def find_set(v):
-#     if v == parent[v]:
-#         return v
-#     parent[v] = find_set(parent[v])
-#     return parent
-
-# def union_set(a, b):
-#     a = find_set(a)
-#     b = find_set(b)
-
-#     if a != b:
-#         if rank[a] < rank[b]:
-#             # swap
-#             temp = a
-#             a = b
-#             b = temp
-#             parent[b] = a
-#         if rank[a] == rank[b]:
-#             rank[a]+=1
-
-# # FIXME: Change this
-# class Edge:
-#     def __init__(self, u, v, weight):
-#         self.u = u
-#         self.v = v
-#         self.weight = weight
-    
-#     def operator(self, other):
-#         return self.weight < other.weight
-
-# def kruskal(edges: list[Edge], n):
-#     cost = 0
-#     results = []
-#     for i in range(n):
-#         make_set(i)
-#     edges.sort(key=lambda x: x.weight)
-
-#     for edge in edges:
-#         if find_set(edge.u) != find_set(edge.v):
-#             cost += edge.weight
-#             results.append(edge)
-#             union_set(edge.u, edge.v)
-#     return results
-
-
-# if __name__ == "__main__":
-#     prepare(6)
-#     graph = [Edge(1, 2, 1),
-#     Edge(2, 3, 2),
-#     Edge(3, 4, 5),
-#     Edge(4, 1, 4),
-#     Edge(1, 3, 3)]
-#     print(kruskal(graph, 5))
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -73,66 +10,48 @@ class Graph:
         self.G = nx.Graph()
 
  
-    # Function to add an edge to graph
+    # Zbieram krawędzie
     def addEdge(self, u, v, w):
         self.graph.append([u, v, w])
         self.G.add_edge(u, v, weight=w, color="black")
  
-    # A utility function to find set of an element i
-    # (truly uses path compression technique)
     def find(self, parent, i):
         if parent[i] != i:
- 
-            # Reassignment of node's parent
-            # to root node as
-            # path compression requires
             parent[i] = self.find(parent, parent[i])
         return parent[i]
- 
-    # A function that does union of two sets of x and y
-    # (uses union by rank)
+
     def union(self, parent, rank, x, y):
- 
-        # Attach smaller rank tree under root of
-        # high rank tree (Union by Rank)
         if rank[x] < rank[y]:
             parent[x] = y
         elif rank[x] > rank[y]:
             parent[y] = x
- 
-        # If ranks are same, then make one as root
-        # and increment its rank by one
         else:
             parent[y] = x
             rank[x] += 1
- 
-    # The main function to construct MST
-    # using Kruskal's algorithm
+
     def KruskalMST(self): 
-        # This will store the resultant MST
+        # krawędzie wybrane do MST
         result = []
-
-        # An index variable, used for sorted edges
-        i = 0
-
-        # An index variable, used for result[]
-        e = 0
-
-        # Sort all the edges in
-        # non-decreasing order of their
-        # weight
+        # Sort po wagach krawędzi
         self.graph = sorted(self.graph,
                             key=lambda item: item[2])
 
         parent = []
         rank = []
 
-        # Create V subsets with single elements
         for node in range(self.V):
-            # MakeSet (patrz Cormen)
+            # MakeSet (patrz Cormen) dla każdego noda
             parent.append(node)
             rank.append(0)
         # Number of edges to be taken is less than to V-1
+        # TODO: 
+
+        # An index for sorted edges
+        # Wskaźnik do przechodzenia po posortowanych krawędziach
+        i = 0
+        # Wskaźnik do przechodzenia po tablicy z wybranymi krawędziami
+        e = 0
+        # Przejścia po wszystkich krawędziach
         while e < self.V - 1:
 
             # Pick the smallest edge and increment
@@ -145,27 +64,28 @@ class Graph:
             # cause cycle, then include it in result
             # and increment the index of result
             # for next edge
+
+            # Detekcja cykli
             if x != y:
                 e = e + 1
+                # Dodawanie nie tworzących cykli w następnej decyzji krawędzi
                 result.append([u, v, w])
                 self.G[u][v]['color'] = "red"
                 print("%d -- %d" % (u, v))
                 self.union(parent, rank, x, y)
-            # Else discard the edge
-            # color_map = ['red' if [u, v, w] in result else 'green' for _ in self.G.nodes]
+            # Kiedy krawędź tworzy cykl to ją odżucamy
             colors = [self.G[u][v]['color'] for u,v in self.G.edges()]
             nx.draw_networkx(self.G, with_labels=True, edge_color=colors)
             plt.show()
 
-        minimumCost = 0
+        cost = 0
         print("Edges in the constructed MST")
         for u, v, weight in result:
-            minimumCost += weight
-            # print("%d -- %d == %d" % (u, v, weight))
-        print("Minimum Spanning Tree", minimumCost)
+            cost += weight
+            print("{u} -- {v} == {weight}")
+        print("Total cost for MST: ", cost)
 
 
-# Driver code
 if __name__ == '__main__':
     g = Graph(4)
     # g.addEdge(0, 1, 10)
@@ -179,5 +99,5 @@ if __name__ == '__main__':
     g.addEdge(0, 3, 4)
     g.addEdge(1, 2, 2)
     g.addEdge(2, 3, 5)
-    # Function call
+
     g.KruskalMST()
