@@ -20,7 +20,7 @@ class Graph:
 			for next_node in self.adjacency_list[leading_node]:
 				self.canvas.add_edge(leading_node, next_node)
 		
-		print("Hello WOrld")
+		# print("Hello WOrld")
 
 	def add_node(self, node: Tuple[Any, List]) -> None:
 		self.adjacency_list[node[0]] = node[10]
@@ -33,7 +33,7 @@ class Graph:
 	def dfs(self, visited, graph, node):
 		print(node)
 		visited.append(node)
-		color_map = ['red' if node in visited else 'green' for node in list(graph.keys())]
+		color_map = ['red' if _ in visited else 'green' for _ in list(self.canvas.nodes)]
 		nx.draw_networkx(self.canvas, with_labels=True, node_color=color_map)
 		plt.show()
 		for neighbour in graph[node]:
@@ -54,16 +54,45 @@ if __name__ == "__main__":
 	# 	2: [1, 3],
 	# 	3: [0, 2, 4],
 	# 	4: [1, 3],
-	# 	# 5: [6, 7],
-	# 	# 6: [5, 7],
-	# 	# 7: [5, 6],
+
+	# 	5: [6, 7],
+	# 	6: [5, 7],
+	# 	7: [5, 6],
 	# }
-	p = {
-    'A': ['B', 'C'],
-    'B': ['A', 'C', 'D'],
-    'C': ['A', 'B', 'D'],
-    'D': ['B', 'C']
-	}
-	g = Graph(nodes=p)
+
+	# g = Graph(nodes=p)
+	# g.plot()
+	# print(g.dfs_helper("0"))
+
+	# p = {
+    # 'A': ['B', 'C'],
+    # 'B': ['A', 'C', 'D'],
+    # 'C': ['A', 'B', 'D'],
+    # 'D': ['B', 'C']
+	# }
+
+	# g = Graph(nodes=p)
+	# g.plot()
+	# print(g.dfs_helper("A"))
+
+	# graph = {'0': ['1', '2'],
+    #      '1': ['0', '3', '4'],
+    #      '2': ['0'],
+    #      '3': ['1'],
+    #      '4': ['2', '3']}
+
+	# g = Graph(nodes=graph)
+	# g.plot()
+	# print(g.dfs_helper("0"))
+
+	graph = {
+        0: [2],
+        1: [2, 3],
+        2: [0, 1, 4],
+        3: [1, 4],
+        4: [2, 3]
+    }
+
+	g = Graph(nodes=graph)
 	g.plot()
-	print(g.dfs_helper("A"))
+	print(g.dfs_helper(0))
