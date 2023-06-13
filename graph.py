@@ -37,6 +37,7 @@ class Graph:
 		nx.draw_networkx(self.canvas, with_labels=True, node_color=color_map)
 		plt.show()
 		for neighbour in graph[node]:
+			# FIXME: t/f notacja
 			if neighbour not in visited:
 				self.dfs(visited, graph, neighbour)
 		return visited
@@ -92,6 +93,8 @@ if __name__ == "__main__":
         3: [1, 4],
         4: [2, 3]
     }
+
+
 
 	g = Graph(nodes=graph)
 	g.plot()

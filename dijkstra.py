@@ -45,6 +45,7 @@ class Graph():
             neighbours[end].add((start, cost))
  
         while q:
+            # TODO: uwagan a koljeki prir
             u = min(q, key=lambda vertex: dist[vertex])
             q.remove(u)
             if dist[u] == inf or u == dest:
@@ -82,19 +83,34 @@ if __name__ == "__main__":
     #             ["e", "f", 9]])
     # pp(graph.dijkstra("a", "e"))
 
-    graph = Graph([
-                    ["r", "o", 5],
-                    ["r", "l", 4],
-                    ["o", "b", 1],
-                    ["o", "m", 3],
-                    ["m", "bel", 5],
-                    ["m", "athen", 4],
-                    ["athen", "bel", 1],
-                    ["rome", "b", 2],
-                    ["rome", "athen", 2],
-                   ])
+    # graph = Graph([
+    #                 ["r", "o", 5],
+    #                 ["r", "l", 4],
+    #                 ["o", "b", 1],
+    #                 ["o", "m", 3],
+    #                 ["m", "bel", 5],
+    #                 ["m", "athen", 4],
+    #                 ["athen", "bel", 1],
+    #                 ["rome", "b", 2],
+    #                 ["rome", "athen", 2],
+    #                ])
+    
     # pp(graph.dijkstra("r", "bel"))
-    pp(graph.dijkstra("l", "bel"))
+    # pp(graph.dijkstra("l", "bel"))
+
+    graph = Graph([
+        ["a", "e", 5],
+        ["a", "b", 10],
+        ["b", "d", 6],
+        ["b", "c", 4],
+        ["c", "f", 14],
+        ["f", "a", 10],
+        ["f", "e", 12],
+        ["e", "b", 7],
+        ["e", "c", 6],
+    ])
+
+    pp(graph.dijkstra("f", "d"))
 
 
 
