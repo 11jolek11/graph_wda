@@ -48,7 +48,7 @@ class Graph():
             u = min(q, key=lambda vertex: dist[vertex])
             q.remove(u)
             if dist[u] == inf or u == dest:
-                # przerwanie kiedy dojdzie do tragetu lub # TODO:
+                # przerwanie kiedy dojdzie do tragetu lub nie nadano dystansu:
                 break
             for v, cost in neighbours[u]:
                 alt = dist[u] + cost
@@ -57,6 +57,7 @@ class Graph():
                 if alt < dist[v]:                                 
                     dist[v] = alt
                     previous[v] = u
+            # Doubly Ended Queue
         s, u = deque(), dest
         # odtworzenie ścieżki
         while previous[u]:
@@ -92,7 +93,8 @@ if __name__ == "__main__":
                     ["rome", "b", 2],
                     ["rome", "athen", 2],
                    ])
-    pp(graph.dijkstra("r", "bel"))
+    # pp(graph.dijkstra("r", "bel"))
+    pp(graph.dijkstra("l", "bel"))
 
 
 
